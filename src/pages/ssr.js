@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-export default function Home({ formattedDate }) {
+export default function SSR({ formattedDate }) {
   return (
     <>
       <Head>
@@ -8,21 +8,27 @@ export default function Home({ formattedDate }) {
         <meta name="description" content="Next.js on Amplify Demo" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <h1>Static Page</h1>
-      <p>This page is static. It was built on {formattedDate}.</p>
+      <h1>Server-Side Rendered Page</h1>
       <p>
-        <a href="/ssr">View a server-side rendered page.</a>
+        This page is server-side rendered. It was rendered on {formattedDate}.
+      </p>
+      <p>
+        <a href="/">View a static page.</a>
       </p>
     </>
   );
 }
 
-export async function getStaticProps() {
-  const buildDate = Date.now();
+export async function getServerSideProps() {
+  const renderDate = Date.now();
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     dateStyle: "long",
     timeStyle: "long",
-  }).format(buildDate);
+  }).format(renderDate);
+
+  console.log(
+    `SSR ran on ${formattedDate}. This will be logged in CloudWatch.`
+  );
 
   return { props: { formattedDate } };
 }
